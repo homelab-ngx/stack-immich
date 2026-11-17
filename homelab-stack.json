@@ -1,0 +1,59 @@
+{
+  "version": 8,
+  "name": "immich",
+  "nixpkgs": "nixos-unstable",
+  "routes": [
+    {
+      "host": "immich",
+      "port": 2283,
+      "max_body": "50GB"
+    }
+  ],
+  "gpu": true,
+  "variables": [
+    {
+      "name": "IMMICH_DATA_DIR",
+      "kind": "path",
+      "description": "Immich's media folder: uploaded originals, the library, thumbnails and encoded video. The stack's immich user and group take its owner and group.",
+      "required": true,
+      "mount": "/pool/immich",
+      "read_only": false,
+      "owner": "immich",
+      "group": "immich"
+    }
+  ],
+  "backup": {
+    "prepare": "postgresqlBackup-immich.service",
+    "folders": [
+      {
+        "label": "Photo library",
+        "variable": "IMMICH_DATA_DIR",
+        "exclude": [
+          {
+            "pattern": "/thumbs/**",
+            "reason": "Thumbnails. Immich makes them again from the originals."
+          },
+          {
+            "pattern": "/encoded-video/**",
+            "reason": "Transcoded video. Immich makes it again from the originals."
+          }
+        ]
+      },
+      {
+        "label": "Database dump",
+        "path": "/var/backup/postgresql"
+      }
+    ]
+  },
+  "health": {
+    "units": [
+      "immich-server.service",
+      "immich-machine-learning.service",
+      "postgresql.service"
+    ],
+    "http": {
+      "port": 2283,
+      "path": "/api/server/ping"
+    }
+  }
+}
