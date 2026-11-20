@@ -9,15 +9,21 @@ a restore.
 
 ## Getting started
 
-1. Make a folder for the library and give it an owner of its own:
-   `chown 2283:2283 <folder>`.
-2. Add the stack: `homelab stacks add github:homelab-ngx/stack-immich`, or
+1. Add the stack: `homelab stacks add github:homelab-ngx/stack-immich`, or
    Add stack on the dashboard's Stacks page.
-3. Set `IMMICH_DATA_DIR` to the folder, approve the grants and start the
-   stack.
+2. On the stack's page, press Create on the `IMMICH_DATA_DIR` row. It makes
+   the library's folder with the owner Immich needs.
+3. Approve the grants and start the stack.
 4. Open `https://immich.<your domain>` and create the admin account.
 5. For hardware transcoding, choose VA-API or Quick Sync in Immich's video
    settings. Intel and AMD graphics only.
+
+In step 2 you can type the path of a folder you have instead; it keeps its
+owner. From a shell, step 2 is
+`homelab stacks folder create immich IMMICH_DATA_DIR`.
+
+Create needs homelab-ngx 0.3.1. On an older version, make the folder
+yourself and give it an owner nothing else uses.
 
 <!-- manifest:start -->
 <!-- Made from homelab-stack.json. Change the manifest, not these lines. -->
